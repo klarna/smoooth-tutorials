@@ -3,6 +3,7 @@ import Head from 'next/head'
 import defaultOrderLines from './db/order_lines'
 import styles from '../styles/Home.module.css'
 import api from './services/api'
+import { getCartFromCookie } from './helpers/cookie'
 
 let checkoutRef = null
 function setDangerousHtml (html) {
@@ -103,11 +104,6 @@ function Checkout({ initialSnippet, initialCart }) {
       </footer>
     </div>
   )
-}
-
-const getCartFromCookie = (cookie) => {
-  const cookieMatch = cookie.match(/(merchantCart=)(?<merchantCart>\S*);?/)
-  return cookieMatch ? cookieMatch.groups.merchantCart : undefined
 }
 
 Checkout.getInitialProps = async ({ req }) => {

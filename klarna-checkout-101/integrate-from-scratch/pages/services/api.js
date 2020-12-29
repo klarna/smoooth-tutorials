@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getOrderIdFromCookie } from './helpers/cookie'
 
 const checkoutUrl = 'https://api.playground.klarna.com/checkout/v3/orders'
 const config = {
@@ -6,11 +7,6 @@ const config = {
     Authorization: `Basic ${Buffer.from(`${process.env.KCO_USERNAME}:${process.env.KCO_PASSWORD}`).toString('base64')}`,
     'Content-Type': 'application/json',
   }
-}
-
-const getOrderIdFromCookie = (cookie) => {
-  const cookieMatch = cookie.match(/(kcoOrderId=)(?<orderId>\S*);?/)
-  return cookieMatch ? cookieMatch.groups.orderId : undefined
 }
 
 const create = async (req) => {
