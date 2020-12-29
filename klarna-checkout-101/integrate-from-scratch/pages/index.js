@@ -1,7 +1,49 @@
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import defaultOrderLines from './db/order_lines'
 import styles from '../styles/Home.module.css'
+import api from './services/api'
 
-function Checkout() {
+let checkoutRef = null
+function setDangerousHtml (html) {
+  if (checkoutRef === null) {
+    return
+  }
+
+  const range = document.createRange()
+
+  range.selectNodeContents(checkoutRef)
+  range.deleteContents()
+
+  checkoutRef.appendChild(range.createContextualFragment(html))
+}
+
+function Checkout({ initialSnippet, initialCart }) {
+  const [ orderLines, setOrderLines ] = useState(initialCart)
+  const [ snippet, setSnippet ] = useState(initialSnippet)
+
+  const addToCartHandle = (reference, shouldIncrease = true) => {
+    const orderLine = orderLines.find(orderLine => orderLine.reference === reference)
+    orderLine.quantity += shouldIncrease ? 1 : -1
+
+    fetch('/api/updateOrder', {
+      method: 'POST',
+      body: JSON.stringify({
+        orderLines
+      })
+    }).then(response => response.json())
+    .then(response => {
+      setSnippet(response.snippet)
+      setOrderLines([...orderLines])
+    })
+  }
+
+  useEffect(() => {
+    if (snippet) {
+      setDangerousHtml(snippet)
+    }
+  }, [snippet])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -11,39 +53,42 @@ function Checkout() {
 
       <div className={styles.main}>
         <div className={styles.left}>
-          <div className={styles.card}>
-            <img src="/sunglasses2-min.jpg" alt="Product image" />
-            <div className={styles.details}>
-              <h2>Classic Low Bridge Sunglasses</h2>
-              <span>Color: <b>White</b></span>
-              <span>Size: <b>Small</b></span>
-              <span>Price: <b>250kr</b></span>
-              <button>Add to cart</button>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <img src="/shoe1-min.jpg" alt="Product image" />
-            <div className={styles.details}>
-              <h2>Original Canvas Slip-On</h2>
-              <span>Color: <b>Black and White</b></span>
-              <span>Size: <b>39</b></span>
-              <span>Price: <b>500kr</b></span>
-              <button>Add to cart</button>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <img src="/t-shirt.jpg" alt="Product image" />
-            <div className={styles.details}>
-              <h2>Round neck organic t-shirt</h2>
-              <span>Color: <b>White</b></span>
-              <span>Size: <b>Small</b></span>
-              <span>Price: <b>340kr</b></span>
-              <button>Add to cart</button>
-            </div>
-          </div>
+          { orderLines &&
+            orderLines.map(orderLine => (
+              <div className={styles.card} key={orderLine.reference}>
+                <img src={orderLine.imgSrc} alt={orderLine.name} />
+                <div className={styles.details}>
+                  <h2>{orderLine.name}</h2>
+                  <span>Color: <b>{orderLine.color}</b></span>
+                  <span>Size: <b>{orderLine.size}</b></span>
+                  <span>Price: <b>{orderLine.unit_price}</b></span>
+                  { orderLine.quantity === 0 &&
+                    <button onClick={() => addToCartHandle(orderLine.reference)}>Add to cart</button>
+                  }
+                  { orderLine.quantity > 0 &&
+                    <div>
+                      <button onClick={() => addToCartHandle(orderLine.reference, false)}>-</button>
+                      <span>{orderLine.quantity}</span>
+                      <button onClick={() => addToCartHandle(orderLine.reference)}>+</button>
+                    </div>
+                  }
+                </div>
+              </div>
+            ))
+          }
         </div>
         <hr className={styles.hr} />
-        <div className={styles.right}>right</div>
+        <div className={styles.right}>
+          { !snippet &&
+            <span>You cart is empty. Please add some items to your cart to render the checkout.</span>
+          }
+          { snippet &&
+            <div
+              ref={ref => checkoutRef = ref}
+              suppressHydrationWarning={true}
+            />
+          }
+        </div>
       </div>
 
       <footer className={styles.footer}>
@@ -60,10 +105,32 @@ function Checkout() {
   )
 }
 
-export async function getStaticProps() {
+const getCartFromCookie = (cookie) => {
+  const cookieMatch = cookie.match(/(merchantCart=)(?<merchantCart>\S*);?/)
+  return cookieMatch ? cookieMatch.groups.merchantCart : undefined
+}
+
+Checkout.getInitialProps = async ({ req }) => {
+  let initialSnippet
+  const initialCart = defaultOrderLines
+  const cartFromCookie = getCartFromCookie(req.headers.cookie)
+
+  if (cartFromCookie) {
+    const checkoutResponse = await api.read(req)
+    initialSnippet = checkoutResponse?.data?.html_snippet
+
+    const parseCart = JSON.parse(cartFromCookie)
+    initialCart.forEach(orderLine => {
+      const quantityFromCookie = parseCart[orderLine.reference]
+      if (quantityFromCookie) {
+        orderLine.quantity = quantityFromCookie
+      }
+    })
+  }
+
   return {
-    props: {
-    },
+    initialSnippet,
+    initialCart,
   }
 }
 
