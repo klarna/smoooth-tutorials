@@ -1,30 +1,9 @@
-import { useEffect } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import api from './services/api'
 import KlarnaCheckout from './components/klarnaCheckout'
 
-let checkoutRef = null
-function setDangerousHtml (html) {
-  if (checkoutRef === null) {
-    return
-  }
-
-  const range = document.createRange()
-
-  range.selectNodeContents(checkoutRef)
-  range.deleteContents()
-
-  checkoutRef.appendChild(range.createContextualFragment(html))
-}
-
 function Confirmation({ snippet }) {
-  useEffect(() => {
-    if (snippet) {
-      setDangerousHtml(snippet)
-    }
-  }, [snippet])
-
   return (
     <div className={styles.container}>
       <Head>
