@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import api from './services/api'
+import KlarnaCheckout from './components/klarnaCheckout'
 
 let checkoutRef = null
 function setDangerousHtml (html) {
@@ -36,10 +37,7 @@ function Confirmation({ snippet }) {
           <span>Error getting order id from the query string.</span>
         }
         { snippet &&
-          <div
-            ref={ref => checkoutRef = ref}
-            suppressHydrationWarning={true}
-          />
+          <KlarnaCheckout snippet={snippet} />
         }
         <button className={styles.button} onClick={() => window.location.href = '/'}>Continue Shopping</button>
       </div>

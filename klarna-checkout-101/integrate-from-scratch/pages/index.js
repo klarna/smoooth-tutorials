@@ -4,20 +4,7 @@ import defaultOrderLines from './db/order_lines'
 import styles from '../styles/Home.module.css'
 import api from './services/api'
 import { getCartFromCookie, getOrderIdFromCookie } from './helpers/cookie'
-
-let checkoutRef = null
-function setDangerousHtml (html) {
-  if (checkoutRef === null) {
-    return
-  }
-
-  const range = document.createRange()
-
-  range.selectNodeContents(checkoutRef)
-  range.deleteContents()
-
-  checkoutRef.appendChild(range.createContextualFragment(html))
-}
+import KlarnaCheckout from './components/klarnaCheckout'
 
 function Checkout({ initialSnippet, initialCart }) {
   const [ orderLines, setOrderLines ] = useState(initialCart)
@@ -38,12 +25,6 @@ function Checkout({ initialSnippet, initialCart }) {
       setOrderLines([...orderLines])
     })
   }
-
-  useEffect(() => {
-    if (snippet) {
-      setDangerousHtml(snippet)
-    }
-  }, [snippet])
 
   return (
     <div className={styles.container}>
@@ -84,10 +65,7 @@ function Checkout({ initialSnippet, initialCart }) {
             <span>Your cart is empty. Please add some items to your cart to render the checkout.</span>
           }
           { snippet &&
-            <div
-              ref={ref => checkoutRef = ref}
-              suppressHydrationWarning={true}
-            />
+            <KlarnaCheckout snippet={snippet} />
           }
         </div>
       </div>
