@@ -3,7 +3,31 @@
 [![License][license-image]][license-url]
 [![Developed at Klarna][klarna-image]][klarna-url]
 
-This repository hosts all code examples for the Klarna Smoooth Tutorials.
+> This repository hosts all code examples for the Klarna Smoooth Tutorials.
+
+![A banner showing some simple illustrations](./assets/github-markdown-banner.png)
+
+It includes examples of integrating Klarna within the following application types.
+
+### Next.js
+
+Next.js is a server-side rendering framework based on React. If you have a React-based application this tutorial is probably what you want to have a look at. You can find it under the following links:
+
+- 📹 Video: https://youtube.com
+- 💻 Code: [here](./klarna-checkout-101/integrate-from-scratch)
+- 📄 Docs: [Klarna Developers](https://developers.klarna.com/documentation/klarna-checkout/)
+
+### Are you missing an example?
+
+Create an [issue](https://github.com/klarna-incubator/smoooth-tutorials/issues) and describe what example you want to see. We will continously work on providing as many examples as possible.
+
+## How to contribute
+
+Wanna contribute your own example? See our guide on [contributing](.github/CONTRIBUTING.md).
+
+## Release History
+
+See our [changelog](CHANGELOG.md).
 
 ## License
 
