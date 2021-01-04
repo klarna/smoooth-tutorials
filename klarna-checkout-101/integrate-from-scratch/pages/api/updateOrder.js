@@ -1,9 +1,11 @@
 import api from '../services/api'
+import { getOrderIdFromCookie } from '../helpers/cookie'
 
 export default async (req, res) => {
-  let checkoutResponse = await api.updateOrCreate(req)
-
+  const orderId = getOrderIdFromCookie(req.headers.cookie)
   const reqData = JSON.parse(req.body)
+  let checkoutResponse = await api.updateOrCreate(orderId, reqData.orderLines)
+
   const orderLinesToCookie = reqData.orderLines
     .filter(orderLine => orderLine.quantity)
     .reduce((acc, orderLine) => {

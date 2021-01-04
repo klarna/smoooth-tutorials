@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { getOrderIdFromCookie } from '../helpers/cookie'
 
 const checkoutUrl = 'https://api.playground.klarna.com/checkout/v3/orders'
 const config = {
@@ -41,9 +40,8 @@ const calculateOrderLinesValues = (orderLines) => {
   }
 }
 
-const create = async (req) => {
-  const reqData = JSON.parse(req.body)
-  const { amount, taxAmount, orderLines } = calculateOrderLinesValues(reqData.orderLines)
+const create = async (initialOrderLines) => {
+  const { amount, taxAmount, orderLines } = calculateOrderLinesValues(initialOrderLines)
   
   const data = {
     ...defaultData,
@@ -55,9 +53,8 @@ const create = async (req) => {
   return axios.post(checkoutUrl, data, config)
 }
 
-const update = async (req, orderId) => {
-  const reqData = JSON.parse(req.body)
-  const { amount, taxAmount, orderLines } = calculateOrderLinesValues(reqData.orderLines)
+const update = async (orderId, initialOrderLines) => {
+  const { amount, taxAmount, orderLines } = calculateOrderLinesValues(initialOrderLines)
   
   const data = {
     ...defaultData,
@@ -83,18 +80,17 @@ export default {
 
     return response
   },
-  updateOrCreate: async (req) => {
-    const orderId = getOrderIdFromCookie(req.headers.cookie)
+  updateOrCreate: async (orderId, initialOrderLines) => {
     let response
 
     if (orderId) {
       try {
-        response = await update(req, orderId)
+        response = await update(orderId, initialOrderLines)
       } catch (e) {
-        response = await create(req)
+        response = await create(initialOrderLines)
       }
     } else {
-      response = await create(req)
+      response = await create(initialOrderLines)
     }
 
     return response
