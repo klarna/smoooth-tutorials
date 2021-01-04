@@ -110,12 +110,12 @@ Checkout.getInitialProps = async ({ req }) => {
   let initialSnippet
   const initialCart = defaultOrderLines
   const cartFromCookie = getCartFromCookie(req.headers.cookie)
+  const parseCart = cartFromCookie && JSON.parse(cartFromCookie)
 
-  if (cartFromCookie) {
+  if (Object.keys(parseCart).length) {
     const checkoutResponse = await api.read(req)
     initialSnippet = checkoutResponse?.data?.html_snippet
 
-    const parseCart = JSON.parse(cartFromCookie)
     initialCart.forEach(orderLine => {
       const quantityFromCookie = parseCart[orderLine.reference]
       if (quantityFromCookie) {

@@ -1,4 +1,3 @@
-// TODO: remove unnecessary amount/tax properties
 export default [
   {
     type: 'physical',
@@ -10,10 +9,7 @@ export default [
     quantity: 0,
     quantity_unit: 'pcs',
     unit_price: 25000,
-    tax_rate: 250,
-    total_amount: 25000,
-    total_discount_amount: 0,
-    total_tax_amount: 250,
+    tax_rate: 2500,
   },
   {
     type: 'physical',
@@ -25,10 +21,7 @@ export default [
     quantity: 0,
     quantity_unit: 'pcs',
     unit_price: 50000,
-    tax_rate: 250,
-    total_amount: 50000,
-    total_discount_amount: 0,
-    total_tax_amount: 250,
+    tax_rate: 2500,
   },
   {
     type: 'physical',
@@ -40,9 +33,6 @@ export default [
     quantity: 0,
     quantity_unit: 'pcs',
     unit_price: 34000,
-    tax_rate: 340,
-    total_amount: 34000,
-    total_discount_amount: 0,
-    total_tax_amount: 340,
+    tax_rate: 2500,
   },
 ]
