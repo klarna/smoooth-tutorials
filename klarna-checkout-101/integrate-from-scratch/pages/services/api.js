@@ -9,6 +9,18 @@ const config = {
   }
 }
 
+const defaultData = {
+  'purchase_country': 'SE',
+  'purchase_currency': 'SEK',
+  'locale': 'en-GB',
+  'merchant_urls': {
+    'terms': 'http://localhost:3000/terms',
+    'checkout': 'http://localhost:3000?order_id={checkout.order.id}',
+    'confirmation': 'http://localhost:3000/confirmation?order_id={checkout.order.id}',
+    'push': 'http://localhost:3000/api/push?order_id={checkout.order.id}'
+  },
+}
+
 const calculateOrderLinesValues = (orderLines) => {
   let amount = 0, taxAmount = 0
   const currentOrderLines = orderLines.filter(orderLine => orderLine.quantity)
@@ -34,18 +46,10 @@ const create = async (req) => {
   const { amount, taxAmount, orderLines } = calculateOrderLinesValues(reqData.orderLines)
   
   const data = {
-    'purchase_country': 'SE',
-    'purchase_currency': 'SEK',
-    'locale': 'en-GB',
+    ...defaultData,
     'order_amount': amount,
     'order_tax_amount': taxAmount,
     'order_lines': orderLines,
-    'merchant_urls': {
-      'terms': 'http://localhost:3000/terms.html',
-      'checkout': 'http://localhost:3000/checkout.html?order_id={checkout.order.id}',
-      'confirmation': 'http://localhost:3000/confirmation.html?order_id={checkout.order.id}',
-      'push': 'http://localhost:3000/api/push?order_id={checkout.order.id}'
-    },
   }
 
   return axios.post(checkoutUrl, data, config)
@@ -56,27 +60,17 @@ const update = async (req, orderId) => {
   const { amount, taxAmount, orderLines } = calculateOrderLinesValues(reqData.orderLines)
   
   const data = {
-    'purchase_country': 'SE',
-    'purchase_currency': 'SEK',
-    'locale': 'en-GB',
+    ...defaultData,
     'order_amount': amount,
     'order_tax_amount': taxAmount,
     'order_lines': orderLines,
-    'merchant_urls': {
-      'terms': 'http://localhost:3000/terms.html',
-      'checkout': 'http://localhost:3000/checkout.html?order_id={checkout.order.id}',
-      'confirmation': 'http://localhost:3000/confirmation.html?order_id={checkout.order.id}',
-      'push': 'http://localhost:3000/api/push?order_id={checkout.order.id}'
-    },
   }
 
   return axios.post(`${checkoutUrl}/${orderId}`, data, config)
 }
 
 export default {
-  read: async (req) => {
-    const orderId = getOrderIdFromCookie(req.headers.cookie)
-
+  read: async (orderId) => {
     if (!orderId) {
       return undefined
     }

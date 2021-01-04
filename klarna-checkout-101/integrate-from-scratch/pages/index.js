@@ -3,7 +3,7 @@ import Head from 'next/head'
 import defaultOrderLines from './db/order_lines'
 import styles from '../styles/Home.module.css'
 import api from './services/api'
-import { getCartFromCookie } from './helpers/cookie'
+import { getCartFromCookie, getOrderIdFromCookie } from './helpers/cookie'
 
 let checkoutRef = null
 function setDangerousHtml (html) {
@@ -62,15 +62,15 @@ function Checkout({ initialSnippet, initialCart }) {
                   <h2>{orderLine.name}</h2>
                   <span>Color: <b>{orderLine.color}</b></span>
                   <span>Size: <b>{orderLine.size}</b></span>
-                  <span>Price: <b>{orderLine.unit_price}</b></span>
+                  <span>Price: <b>{(orderLine.unit_price/100).toFixed(2)}</b></span>
                   { orderLine.quantity === 0 &&
-                    <button onClick={() => addToCartHandle(orderLine.reference)}>Add to cart</button>
+                    <button className={styles.button} onClick={() => addToCartHandle(orderLine.reference)}>Add to cart</button>
                   }
                   { orderLine.quantity > 0 &&
                     <div>
-                      <button onClick={() => addToCartHandle(orderLine.reference, false)}>-</button>
-                      <span>{orderLine.quantity}</span>
-                      <button onClick={() => addToCartHandle(orderLine.reference)}>+</button>
+                      <button className={styles.button} onClick={() => addToCartHandle(orderLine.reference, false)}>-</button>
+                      <b className={styles.quantity}>{orderLine.quantity}</b>
+                      <button className={styles.button} onClick={() => addToCartHandle(orderLine.reference)}>+</button>
                     </div>
                   }
                 </div>
@@ -81,7 +81,7 @@ function Checkout({ initialSnippet, initialCart }) {
         <hr className={styles.hr} />
         <div className={styles.right}>
           { !snippet &&
-            <span>You cart is empty. Please add some items to your cart to render the checkout.</span>
+            <span>Your cart is empty. Please add some items to your cart to render the checkout.</span>
           }
           { snippet &&
             <div
@@ -113,15 +113,19 @@ Checkout.getInitialProps = async ({ req }) => {
   const parseCart = cartFromCookie && JSON.parse(cartFromCookie)
 
   if (Object.keys(parseCart).length) {
-    const checkoutResponse = await api.read(req)
-    initialSnippet = checkoutResponse?.data?.html_snippet
+    const orderId = getOrderIdFromCookie(req.headers.cookie)
+    const checkoutResponse = await api.read(orderId)
 
-    initialCart.forEach(orderLine => {
-      const quantityFromCookie = parseCart[orderLine.reference]
-      if (quantityFromCookie) {
-        orderLine.quantity = quantityFromCookie
-      }
-    })
+    if (checkoutResponse?.data?.status !== 'checkout_complete') {
+      initialSnippet = checkoutResponse?.data?.html_snippet
+
+      initialCart.forEach(orderLine => {
+        const quantityFromCookie = parseCart[orderLine.reference]
+        if (quantityFromCookie) {
+          orderLine.quantity = quantityFromCookie
+        }
+      })
+    }
   }
 
   return {
