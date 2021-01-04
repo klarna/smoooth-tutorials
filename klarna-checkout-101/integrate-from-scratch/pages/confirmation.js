@@ -20,17 +20,6 @@ function Confirmation({ snippet }) {
         }
         <button className={styles.button} onClick={() => window.location.href = '/'}>Continue Shopping</button>
       </div>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://klarna.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/klarna.svg" alt="Klarna Logo" className={styles.logo} />
-        </a>
-      </footer>
     </div>
   )
 }

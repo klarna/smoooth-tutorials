@@ -24,10 +24,8 @@ export default function Catalog({ initialCart, setSnippet }) {
     <div className={styles.card} key={orderLine.reference}>
       <img src={orderLine.imgSrc} alt={orderLine.name} />
       <div className={styles.details}>
-        <h2>{orderLine.name}</h2>
-        <span>Color: <b>{orderLine.color}</b></span>
-        <span>Size: <b>{orderLine.size}</b></span>
-        <span>Price: <b>{(orderLine.unit_price/100).toFixed(2)}</b></span>
+        <span>{orderLine.name}</span>
+        <b>{(orderLine.unit_price/100).toFixed(2)}</b>
         { orderLine.quantity === 0 &&
           <button className={styles.button} onClick={() => addToCartHandle(orderLine.reference)}>Add to cart</button>
         }
