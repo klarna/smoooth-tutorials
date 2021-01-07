@@ -38,13 +38,13 @@ function Checkout({ initialSnippet, initialCart }) {
   )
 }
 
-Checkout.getInitialProps = async ({ req }) => {
-  let initialSnippet
+export const getServerSideProps = async ({ req }) => {
+  let initialSnippet = null
   const initialCart = defaultOrderLines
   const cartFromCookie = getCartFromCookie(req.headers.cookie)
   const parseCart = cartFromCookie && JSON.parse(cartFromCookie)
 
-  if (Object.keys(parseCart).length) {
+  if (parseCart && Object.keys(parseCart).length) {
     const orderId = getOrderIdFromCookie(req.headers.cookie)
     const checkoutResponse = await api.read(orderId)
 
@@ -61,8 +61,10 @@ Checkout.getInitialProps = async ({ req }) => {
   }
 
   return {
-    initialSnippet,
-    initialCart,
+    props: {
+      initialSnippet,
+      initialCart,
+    },
   }
 }
 
