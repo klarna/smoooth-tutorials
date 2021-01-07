@@ -24,15 +24,17 @@ function Confirmation({ snippet }) {
   )
 }
 
-Confirmation.getInitialProps = async ({ query }) => {
-  let snippet
+export const getServerSideProps = async ({ query }) => {
+  let snippet = null
   if (query.order_id) {
     const checkoutResponse = await api.read(query.order_id)
     snippet = checkoutResponse?.data?.html_snippet
   }
   
   return {
-    snippet,
+    props: {
+      snippet,
+    }
   }
 }
 

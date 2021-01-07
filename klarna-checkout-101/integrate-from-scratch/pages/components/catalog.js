@@ -4,20 +4,20 @@ import styles from '../../styles/Home.module.css'
 export default function Catalog({ initialCart, setSnippet }) {
   const [ orderLines, setOrderLines ] = useState(initialCart)
 
-  const addToCartHandle = (reference, shouldIncrease = true) => {
+  const addToCartHandle = async (reference, shouldIncrease = true) => {
     const orderLine = orderLines.find(orderLine => orderLine.reference === reference)
     orderLine.quantity += shouldIncrease ? 1 : -1
 
-    fetch('/api/updateOrder', {
+    const response = await fetch('/api/updateOrder', {
       method: 'POST',
       body: JSON.stringify({
         orderLines
       })
-    }).then(response => response.json())
-    .then(response => {
-      setSnippet(response.snippet)
-      setOrderLines([...orderLines])
     })
+    const order = await response.json()
+    
+    setSnippet(order.snippet)
+    setOrderLines([...orderLines])
   }
 
   return orderLines.map(orderLine => (
