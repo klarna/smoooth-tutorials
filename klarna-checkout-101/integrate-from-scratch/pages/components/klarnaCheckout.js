@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 let checkoutRef = null
-function setDangerousHtml (html) {
+function setDangerousHtml(html) {
   if (checkoutRef === null) {
     return
   }
@@ -22,9 +22,6 @@ export default function KlarnaCheckout({ snippet }) {
   }, [snippet])
 
   return (
-    <div
-      ref={ref => checkoutRef = ref}
-      suppressHydrationWarning={true}
-    />
+    <div ref={(ref) => (checkoutRef = ref)} suppressHydrationWarning={true} />
   )
 }

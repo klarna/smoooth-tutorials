@@ -12,13 +12,14 @@ function Confirmation({ snippet }) {
       </Head>
 
       <div className={styles.confirmation}>
-        { !snippet &&
-          <span>Error getting order id from the query string.</span>
-        }
-        { snippet &&
-          <KlarnaCheckout snippet={snippet} />
-        }
-        <button className={styles.button} onClick={() => window.location.href = '/'}>Continue Shopping</button>
+        {!snippet && <span>Error getting order id from the query string.</span>}
+        {snippet && <KlarnaCheckout snippet={snippet} />}
+        <button
+          className={styles.button}
+          onClick={() => (window.location.href = '/')}
+        >
+          Continue Shopping
+        </button>
       </div>
     </div>
   )
@@ -30,11 +31,11 @@ export const getServerSideProps = async ({ query }) => {
     const checkoutResponse = await api.read(query.order_id)
     snippet = checkoutResponse?.data?.html_snippet
   }
-  
+
   return {
     props: {
       snippet,
-    }
+    },
   }
 }
 
