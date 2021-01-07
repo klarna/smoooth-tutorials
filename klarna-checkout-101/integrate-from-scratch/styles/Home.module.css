@@ -11,9 +11,9 @@
   margin: 0 auto;
 }
 
-.hr { 
+.hr {
   border: none;
-  border-left: 1px solid hsla(200, 10%, 50%,100);
+  border-left: 1px solid hsla(200, 10%, 50%, 100);
   min-height: 1000px;
   width: 1px;
   margin: auto 0;
@@ -44,7 +44,7 @@
   height: 40px;
   padding: 11px 24px;
   color: rgb(255, 255, 255);
-  font-family: "Klarna Text", "Klarna Sans", Helvetica, Arial, sans-serif;
+  font-family: 'Klarna Text', 'Klarna Sans', Helvetica, Arial, sans-serif;
   font-weight: 500;
   font-size: 16px;
   text-rendering: geometricprecision;

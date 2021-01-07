@@ -5,5 +5,7 @@ export const getOrderIdFromCookie = (cookie) => {
 
 export const getCartFromCookie = (cookie) => {
   const cookieMatch = cookie.match(/(merchantCart=)(?<merchantCart>\S*);?/)
-  return cookieMatch ? cookieMatch.groups.merchantCart.replace(';', '') : undefined
+  return cookieMatch
+    ? cookieMatch.groups.merchantCart.replace(';', '')
+    : undefined
 }

@@ -8,7 +8,7 @@ import KlarnaCheckout from './components/klarnaCheckout'
 import Catalog from './components/catalog'
 
 function Checkout({ initialSnippet, initialCart }) {
-  const [ snippet, setSnippet ] = useState(initialSnippet)
+  const [snippet, setSnippet] = useState(initialSnippet)
 
   return (
     <div className={styles.container}>
@@ -19,18 +19,19 @@ function Checkout({ initialSnippet, initialCart }) {
 
       <div className={styles.main}>
         <div className={styles.left}>
-          { initialCart &&
+          {initialCart && (
             <Catalog initialCart={initialCart} setSnippet={setSnippet} />
-          }
+          )}
         </div>
         <hr className={styles.hr} />
         <div className={styles.right}>
-          { !snippet &&
-            <span>Your cart is empty. Please add some items to your cart to render the checkout.</span>
-          }
-          { snippet &&
-            <KlarnaCheckout snippet={snippet} />
-          }
+          {!snippet && (
+            <span>
+              Your cart is empty. Please add some items to your cart to render
+              the checkout.
+            </span>
+          )}
+          {snippet && <KlarnaCheckout snippet={snippet} />}
         </div>
       </div>
     </div>
@@ -50,7 +51,7 @@ Checkout.getInitialProps = async ({ req }) => {
     if (checkoutResponse?.data?.status !== 'checkout_complete') {
       initialSnippet = checkoutResponse?.data?.html_snippet
 
-      initialCart.forEach(orderLine => {
+      initialCart.forEach((orderLine) => {
         const quantityFromCookie = parseCart[orderLine.reference]
         if (quantityFromCookie) {
           orderLine.quantity = quantityFromCookie
