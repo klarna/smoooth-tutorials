@@ -2,8 +2,6 @@ import { useState } from 'react'
 import Head from 'next/head'
 import defaultOrderLines from './db/order_lines'
 import styles from '../styles/Home.module.css'
-import api from './services/api'
-import { getCartFromCookie, getOrderIdFromCookie } from './helpers/cookie'
 import KlarnaCheckout from './components/klarnaCheckout'
 import Catalog from './components/catalog'
 
@@ -38,32 +36,10 @@ function Checkout({ initialSnippet, initialCart }) {
   )
 }
 
-export const getServerSideProps = async ({ req }) => {
-  let initialSnippet = null
-  const initialCart = defaultOrderLines
-  const cartFromCookie = getCartFromCookie(req.headers.cookie)
-  const parseCart = cartFromCookie && JSON.parse(cartFromCookie)
-
-  if (parseCart && Object.keys(parseCart).length) {
-    const orderId = getOrderIdFromCookie(req.headers.cookie)
-    const checkoutResponse = await api.read(orderId)
-
-    if (checkoutResponse?.data?.status !== 'checkout_complete') {
-      initialSnippet = checkoutResponse?.data?.html_snippet
-
-      initialCart.forEach((orderLine) => {
-        const quantityFromCookie = parseCart[orderLine.reference]
-        if (quantityFromCookie) {
-          orderLine.quantity = quantityFromCookie
-        }
-      })
-    }
-  }
-
+export const getServerSideProps = async () => {
   return {
     props: {
-      initialSnippet,
-      initialCart,
+      initialCart: defaultOrderLines,
     },
   }
 }

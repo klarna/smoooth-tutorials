@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import api from './services/api'
 import KlarnaCheckout from './components/klarnaCheckout'
 
 function Confirmation({ snippet }) {
@@ -26,16 +25,10 @@ function Confirmation({ snippet }) {
 }
 
 export const getServerSideProps = async ({ query }) => {
-  let snippet = null
-  if (query.order_id) {
-    const checkoutResponse = await api.read(query.order_id)
-    snippet = checkoutResponse?.data?.html_snippet
-  }
+  // not implemented
 
   return {
-    props: {
-      snippet,
-    },
+    props: {},
   }
 }
 

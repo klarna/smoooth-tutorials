@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 const checkoutUrl = 'https://api.playground.klarna.com/checkout/v3/orders'
 const config = {
   headers: {
@@ -46,63 +44,11 @@ const calculateOrderLinesValues = (orderLines) => {
   }
 }
 
-const create = async (initialOrderLines) => {
-  const { amount, taxAmount, orderLines } = calculateOrderLinesValues(
-    initialOrderLines
-  )
-
-  const data = {
-    ...defaultData,
-    order_amount: amount,
-    order_tax_amount: taxAmount,
-    order_lines: orderLines,
-  }
-
-  return axios.post(checkoutUrl, data, config)
-}
-
-const update = async (orderId, initialOrderLines) => {
-  const { amount, taxAmount, orderLines } = calculateOrderLinesValues(
-    initialOrderLines
-  )
-
-  const data = {
-    ...defaultData,
-    order_amount: amount,
-    order_tax_amount: taxAmount,
-    order_lines: orderLines,
-  }
-
-  return axios.post(`${checkoutUrl}/${orderId}`, data, config)
-}
-
 export default {
   read: async (orderId) => {
-    if (!orderId) {
-      return undefined
-    }
-
-    let response
-
-    try {
-      response = await axios.get(`${checkoutUrl}/${orderId}`, config)
-    } catch (e) {}
-
-    return response
+    // not implemented
   },
   updateOrCreate: async (orderId, initialOrderLines) => {
-    let response
-
-    if (orderId) {
-      try {
-        response = await update(orderId, initialOrderLines)
-      } catch (e) {
-        response = await create(initialOrderLines)
-      }
-    } else {
-      response = await create(initialOrderLines)
-    }
-
-    return response
+    // not implemented
   },
 }
